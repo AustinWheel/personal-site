@@ -57,8 +57,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="relative max-w-screen min-h-screen bg-cover bg-center" 
+    <div className="min-h-screen bg-black flex justify-center overflow-y-auto">
+      <div className="flex-1 relative max-w-screen md:max-w-lg min-h-screen bg-cover bg-center" 
            style={{ backgroundImage: "url('/bg.JPG')" }}>
         <div className="absolute inset-0 backdrop-blur-md bg-black/30" />
         
