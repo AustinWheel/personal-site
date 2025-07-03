@@ -5,8 +5,12 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Austin Wheeler",
-  description: "Personal portfolio website",
+  title: "Austin Wheeler - Software Engineer",
+  description: "Software Engineer at Netflix. Building scalable systems and beautiful web experiences.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

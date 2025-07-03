@@ -23,13 +23,16 @@ interface GridIconProps {
 }
 
 export default function GridIcon({ app, onClick, delay = 0 }: GridIconProps) {
-  const cellSize = 80;
-  const gap = 20;
+  // Grid is 4 columns x 6 rows
+  const colWidth = 100 / 4; // 25%
+  const rowHeight = 100 / 6; // 16.67%
+  const gap = 0; // 2% gap
   
-  const left = (app.x - 1) * (cellSize + gap);
-  const top = (app.y - 1) * (cellSize + gap);
-  const width = app.width * cellSize + (app.width - 1) * gap;
-  const height = app.height * cellSize + (app.height - 1) * gap + ((app.height -1) * 20);
+  // Calculate position and size as percentages
+  const left = (app.x - 1) * colWidth;
+  const top = (app.y - 1) * rowHeight;
+  const width = app.width * colWidth - gap;
+  const height = app.height * rowHeight - gap;
 
   return (
     <motion.div
@@ -38,19 +41,19 @@ export default function GridIcon({ app, onClick, delay = 0 }: GridIconProps) {
       transition={{ delay, type: "spring", stiffness: 260, damping: 20 }}
       style={{
         position: "absolute",
-        left: `${left}px`,
-        top: `${top + (20 * app.y)}px`,
-        width: `${width}px`,
-        height: `${height + 30}px`,
+        left: `${left}%`,
+        top: `${top}%`,
+        width: `${width}%`,
+        height: `${height}%`,
       }}
-      className="cursor-pointer"
+      className="cursor-pointer p-1.5"
     >
       <motion.div
         whileTap={{ scale: 0.92 }}
         onClick={onClick}
-        className="active:brightness-95"
+        className="active:brightness-95 w-full h-full flex flex-col"
       >
-        <div className="w-full rounded-[20px] shadow-lg overflow-hidden relative" style={{ height: `${height}px` }}>
+        <div className="flex-1 rounded-[20px] shadow-lg overflow-hidden relative">
           {app.icon.startsWith('/') ? (
             <img 
               src={app.icon} 
@@ -63,10 +66,10 @@ export default function GridIcon({ app, onClick, delay = 0 }: GridIconProps) {
             </div>
           )}
         </div>
+        <p className="text-white text-[11px] sm:text-xs text-center font-medium mt-1 drop-shadow-md truncate">
+          {app.title}
+        </p>
       </motion.div>
-      <p className="text-white text-xs text-center font-medium mt-2 drop-shadow-md">
-        {app.title}
-      </p>
     </motion.div>
   );
 }

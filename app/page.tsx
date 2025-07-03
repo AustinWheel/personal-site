@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GridIcon from "@/components/GridIcon";
 import Dialog from "@/components/Dialog";
@@ -21,6 +21,31 @@ interface AppData {
 
 export default function Home() {
   const [selectedApp, setSelectedApp] = useState<AppData | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   const apps: AppData[] = [
     { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I’m Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a handful of scrappy startups. I graduated in December 2025, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy." },
@@ -37,18 +62,18 @@ export default function Home() {
            style={{ backgroundImage: "url('/bg.JPG')" }}>
         <div className="absolute inset-0 backdrop-blur-md bg-black/30" />
         
-        <div className="relative z-10 px-6 pt-16 pb-8">
+        <div className="relative z-10 px-4 pt-16 pb-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-center mb-8"
           >
-            <h1 className="text-white text-lg font-medium">12:48</h1>
-            <p className="text-white/80 text-sm">Wednesday, July 7</p>
+            <h1 className="text-white text-lg font-medium">{formatTime(currentTime)}</h1>
+            <p className="text-white/80 text-sm">{formatDate(currentTime)}</p>
           </motion.div>
 
-          <div className="relative" style={{ height: "640px" }}>
+          <div className="relative w-full" style={{ paddingBottom: "180%" }}>
             {apps.map((app, index) => (
               <GridIcon
                 key={app.id}
