@@ -32,27 +32,38 @@ export default function Dialog({ app, onClose }: DialogProps) {
   }, [onClose]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
       className="fixed inset-0 z-50 flex items-end justify-center"
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <motion.div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      />
       
       <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-[428px] h-[90vh] overflow-hidden shadow-2xl border-t border-white/20"
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
+        transition={{ 
+          ease: "easeIn",
+          duration: 0.3,
+          opacity: { duration: 0.15 }
+        }}
+        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-[428px] overflow-hidden shadow-2xl border-t border-white/20"
         onClick={(e) => e.stopPropagation()}
-        style={{ WebkitBackdropFilter: 'blur(24px)' }}
+        style={{ 
+          WebkitBackdropFilter: 'blur(24px)', 
+          height: 'min(90dvh, 90vh)',
+          maxHeight: 'calc(100dvh - 2rem)'
+        }}
       >
         <div className="w-12 h-1 bg-white/40 rounded-full mx-auto mt-3 mb-2" />
         
-        <div className="px-6 pb-6 overflow-y-auto h-[calc(90vh-60px)]">
+        <div className="px-6 pb-6 overflow-y-auto" style={{ height: 'calc(min(90dvh, 90vh) - 60px)' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-3xl font-bold text-white drop-shadow-lg">{app.title}</h2>
@@ -111,6 +122,6 @@ export default function Dialog({ app, onClose }: DialogProps) {
           )}
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
