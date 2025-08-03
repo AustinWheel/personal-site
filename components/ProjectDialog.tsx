@@ -3,9 +3,13 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
+type ProjectContent = 
+  | { type: 'text'; content: string }
+  | { type: 'image'; src: string; alt?: string };
+
 interface Project {
   title: string;
-  description: string;
+  description: ProjectContent[];
 }
 
 interface ProjectDialogProps {
@@ -41,7 +45,7 @@ export default function ProjectDialog({ project, onClose }: ProjectDialogProps) 
           duration: 0.3,
           opacity: { duration: 0.15 }
         }}
-        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-[428px] shadow-2xl border-t border-white/20"
+        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-lg shadow-2xl border-t border-white/20"
         onClick={(e) => e.stopPropagation()}
         style={{ 
           WebkitBackdropFilter: 'blur(24px)', 
@@ -64,8 +68,25 @@ export default function ProjectDialog({ project, onClose }: ProjectDialogProps) 
             </button>
           </div>
 
-          <div className="text-white/90 text-lg leading-relaxed">
-            <p>{project.description}</p>
+          <div className="space-y-4">
+            {project.description.map((item, index) => (
+              <div key={index}>
+                {item.type === 'text' ? (
+                  <p className="text-white/90 text-lg leading-relaxed">{item.content}</p>
+                ) : (
+                  <div className="rounded-lg overflow-hidden">
+                    <img
+                      src={item.src}
+                      alt={item.alt || `${project.title} image ${index}`}
+                      className="w-full h-auto"
+                      onError={(e) => {
+                        e.currentTarget.src = `data:image/svg+xml,%3Csvg width='400' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='200' fill='%23ffffff20'/%3E%3Ctext x='200' y='100' font-family='system-ui' font-size='14' fill='%23ffffff80' text-anchor='middle' dominant-baseline='middle'%3EImage unavailable%3C/text%3E%3C/svg%3E`;
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </motion.div>

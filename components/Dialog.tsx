@@ -4,9 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import ProjectDialog from "./ProjectDialog";
 
+type ProjectContent = 
+  | { type: 'text'; content: string }
+  | { type: 'image'; src: string; alt?: string };
+
 interface Project {
   title: string;
-  description: string;
+  description: ProjectContent[];
 }
 
 interface AppData {
@@ -69,7 +73,7 @@ export default function Dialog({ app, onClose }: DialogProps) {
           duration: 0.3,
           opacity: { duration: 0.15 }
         }}
-        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-[428px] overflow-hidden shadow-2xl border-t border-white/20"
+        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl border-t border-white/20"
         onClick={(e) => e.stopPropagation()}
         style={{ 
           WebkitBackdropFilter: 'blur(24px)', 

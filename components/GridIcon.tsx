@@ -2,9 +2,13 @@
 
 import { motion } from "framer-motion";
 
+type ProjectContent = 
+  | { type: 'text'; content: string }
+  | { type: 'image'; src: string; alt?: string };
+
 interface Project {
   title: string;
-  description: string;
+  description: ProjectContent[];
 }
 
 interface AppData {

@@ -5,9 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import GridIcon from "@/components/GridIcon";
 import Dialog from "@/components/Dialog";
 
+type ProjectContent = 
+  | { type: 'text'; content: string }
+  | { type: 'image'; src: string; alt?: string };
+
 interface Project {
   title: string;
-  description: string;
+  description: ProjectContent[];
 }
 
 interface AppData {
@@ -65,20 +69,27 @@ export default function Home() {
       title: "Netflix", 
       subtitle: "2024 Intern and Current Full-Time", 
       icon: "/netflix.png", 
-      content: "At Netflix, I built a system that automatically scans and cleans up massive data sets in the background—without disrupting live traffic.\n The goal was to help teams manage 'wide rows' (unusually large pieces of data) by finding and trimming them down based on policies they set.\n I designed this scanner to be safe in high-traffic environments, using real-time CPU feedback to automatically slow down or speed up depending on how busy the servers were.\n This allowed us to run cleanup jobs across the entire Key-Value platform without impacting performance, helping improve system reliability and reduce memory overhead at scale.\n Now I am a full-time employee on the Netflix Caching Team working on technologies like Hollow OSS.",
+      content: "I started at Netflix as an intern with KeyValue, and am now a Full Time Software Engineer on our Caching Datastore team.",
       projects: [
         {
           title: "Wide Row Scanner",
-          description: "Developed an intelligent background scanner for Netflix's Key-Value platform that identifies and cleans up 'wide rows' - unusually large data entries that can impact system performance. The scanner uses real-time CPU metrics to dynamically adjust its processing rate, ensuring it never interferes with production traffic. This system processes millions of rows daily across the entire platform, automatically trimming data based on configurable policies set by individual teams."
+          description: [
+            { type: 'text', content: "Created a background scanner for Netflix's Key-Value platform to solve 'wide rows' - an unusually large amount of columns common with Cassandra which decrease system performance." },
+            { type: 'text', content: "Scanning comes with many costs, potential latency increases, additional cluster pressure, not to mention the zero tolerance for errors when deleting data. To handle pressure and latency I implemented CPU based backoff, once CPU reaches a dangerous level, we drop scan speeds until the cluster returns to a healthy range." },
+            { type: 'image', src: '/BGScannerBackpressure.jpg', alt: 'Wide Row Scanner Backpressure' },
+            { type: 'text', content: "The next major challenge is the scale of deletes. When data is deleted from Cassandra, a 'tombstone' is created. The data won't be removed until 'compaction' at a later time. This creates an issue when querying a page of data, as C* wants to fill it up before returning, however when there are millions of tombstones this leads to read timeouts and sections of data which are unreadable." },
+            { type: 'image', src: '/TombstoneKeys.jpg', alt: 'Tombstone Keys' },
+            { type: 'text', content: "To overcome this I used 'Spread-TTL' deletes. Deletes are done through KeyValue, all wide row data is 'marked' for deletion with a random ttl applied for some time range. This reduces the # of tombstones that exist at any given time, and KeyValue is able to filter out 'marked' data before returning to the client." },
+            { type: 'image', src: '/SpreadTTLKeys.jpg', alt: 'SpreadTTL Keys' },
+          ]
         },
         {
           title: "Hollow OSS",
-          description: "Contributing to Netflix's open-source Hollow framework, a comprehensive toolset for disseminating in-memory datasets from a single producer to many consumers. Working on optimizations for data serialization and delta application, helping teams efficiently distribute large datasets across their microservices with minimal memory overhead and network bandwidth."
+          description: [
+            { type: 'image', src: '/hollowoss.png', alt: 'Hollow Logo' },
+            { type: 'text', content: "A contributor to Netflix's Hollow Datastore. Netflix Hollow is a java library and toolset for disseminating in-memory datasets from a single producer to many consumers for high performance read-only access. Hollow aggressively addresses the scaling challenges of in-memory datasets, and is built with servers busily serving requests at or near maximum capacity in mind." },
+          ]
         },
-        {
-          title: "Cache Invalidation Framework",
-          description: "Building a distributed cache invalidation system that ensures data consistency across Netflix's global infrastructure. The framework provides intelligent invalidation strategies based on data access patterns and implements circuit breakers to prevent cascading failures during high-traffic events."
-        }
       ]
     },
     { id: 5, x: 3, y: 2, width: 1, height: 1, title: "ConnectPlus", subtitle: "HSE (会说English)", icon: "/hse.png", content: "ConnectPlus is a nonprofit platform that matches Chinese students with volunteer English tutors from U.S. high schools, making high-quality language education more accessible and affordable. Designed with both communities in mind, the platform supports seamless scheduling, class tracking, and progress monitoring, while offering American high schoolers a meaningful way to earn volunteer hours and make a global impact through language learning. For students, we provide a platform with completely free lessons to those with learning disabilities.", link: "https://www.connectpluseducation.org" },
