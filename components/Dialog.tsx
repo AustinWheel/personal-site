@@ -1,7 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import ProjectDialog from "./ProjectDialog";
+
+interface Project {
+  title: string;
+  description: string;
+}
 
 interface AppData {
   id: number;
@@ -15,6 +21,7 @@ interface AppData {
   icon: string;
   link?: string;
   ref_photos?: string[];
+  projects?: Project[];
 }
 
 interface DialogProps {
@@ -23,15 +30,24 @@ interface DialogProps {
 }
 
 export default function Dialog({ app, onClose }: DialogProps) {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (selectedProject) {
+          setSelectedProject(null);
+        } else {
+          onClose();
+        }
+      }
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
+  }, [onClose, selectedProject]);
 
   return (
+    <>
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
       onClick={onClose}
@@ -58,10 +74,10 @@ export default function Dialog({ app, onClose }: DialogProps) {
         style={{ 
           WebkitBackdropFilter: 'blur(24px)', 
           height: 'min(90dvh, 90vh)',
-          maxHeight: 'calc(100dvh - 2rem)'
+          maxHeight: 'calc(100dvh - 2rem)',
         }}
       >
-        <div className="w-12 h-1 bg-white/40 rounded-full mx-auto mt-3 mb-2" />
+        <div className="w-12 h-1 bg-white/40 rounded-full mx-auto mt-3 mb-2"/>
         
         <div className="px-6 pb-6 overflow-y-auto" style={{ height: 'calc(min(90dvh, 90vh) - 60px)' }}>
           <div className="flex items-center justify-between mb-4">
@@ -105,6 +121,29 @@ export default function Dialog({ app, onClose }: DialogProps) {
             <p className="font-medium text-lg drop-shadow-md">{app.content}</p>
           </div>
 
+          {app.projects && app.projects.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-white/70 text-sm font-medium mb-3">Projects</h3>
+              <div className="space-y-2">
+                {app.projects.map((project, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => setSelectedProject(project)}
+                    className="w-full text-left bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl p-4 transition-colors"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-white font-medium">{project.title}</span>
+                      <svg className="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {app.link && (
             <div className="mt-6">
               <a
@@ -123,5 +162,15 @@ export default function Dialog({ app, onClose }: DialogProps) {
         </div>
       </motion.div>
     </div>
+    
+    <AnimatePresence>
+      {selectedProject && (
+        <ProjectDialog
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
+    </AnimatePresence>
+    </>
   );
 }

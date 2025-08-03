@@ -2,6 +2,11 @@
 
 import { motion } from "framer-motion";
 
+interface Project {
+  title: string;
+  description: string;
+}
+
 interface AppData {
   id: number;
   x: number;
@@ -14,6 +19,7 @@ interface AppData {
   icon: string;
   link?: string;
   ref_photos?: string[];
+  projects?: Project[];
 }
 
 interface GridIconProps {
