@@ -98,7 +98,7 @@ export default function Dialog({ app, onClose }: DialogProps) {
       >
         <div className="w-12 h-1 bg-white/40 rounded-full mx-auto mt-3 mb-2"/>
         
-        <div className="px-6 pb-6 overflow-y-auto" style={{ height: 'calc(min(90dvh, 90vh) - 60px)' }}>
+        <div className="px-6 pb-6 overflow-y-auto scrollbar-hide" style={{ height: 'calc(min(90dvh, 90vh) - 60px)' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-3xl font-bold text-white drop-shadow-lg">{app.title}</h2>

@@ -60,7 +60,7 @@ export default function Home() {
   };
 
   const apps: AppData[] = [
-    { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I’m Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a handful of scrappy startups. I graduated in December 2025, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy." },
+    { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I’m Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a handful of scrappy startups. I graduated in December 2024, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy." },
     { id: 2, x: 3, y: 1, width: 1, height: 1, title: "Snorlax", subtitle: "My favorite pokemon", icon: "/snorlax.jpg", content: "I just wanted to add snorlax somewhere lol... I keep three cards of him on desk as well." },
     { 
       id: 3, 
