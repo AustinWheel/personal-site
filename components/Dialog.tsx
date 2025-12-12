@@ -10,7 +10,9 @@ type ProjectContent =
 
 interface Project {
   title: string;
+  tag?: string;
   description: ProjectContent[];
+  subprojects?: Project[];
 }
 
 interface AppData {
@@ -35,6 +37,19 @@ interface DialogProps {
 
 export default function Dialog({ app, onClose }: DialogProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
+
+  const toggleGroup = (index: number) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -125,28 +140,99 @@ export default function Dialog({ app, onClose }: DialogProps) {
             <p className="font-medium text-lg drop-shadow-md">{app.content}</p>
           </div>
 
-          {app.projects && app.projects.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-white/70 text-sm font-medium mb-3">Projects</h3>
-              <div className="space-y-2">
-                {app.projects.map((project, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => setSelectedProject(project)}
-                    className="w-full text-left bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl p-4 transition-colors"
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-white font-medium">{project.title}</span>
-                      <svg className="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+          {app.projects && app.projects.length > 0 && (() => {
+            const groupedProjects = app.projects.filter(p => p.subprojects && p.subprojects.length > 0);
+            const simpleProjects = app.projects.filter(p => !p.subprojects || p.subprojects.length === 0);
+
+            return (
+              <div className="mt-6">
+                <h3 className="text-white/70 text-sm font-medium mb-3">Projects</h3>
+                <div className="space-y-2">
+                  {groupedProjects.map((project, index) => (
+                    <div key={index}>
+                      <button
+                        onClick={() => toggleGroup(index)}
+                        className="flex items-center gap-2 py-2 text-white/70 hover:text-white transition-colors"
+                      >
+                        <motion.svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          animate={{ rotate: expandedGroups.has(index) ? 90 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </motion.svg>
+                        <span className="font-medium">{project.title}</span>
+                      </button>
+                      <AnimatePresence>
+                        {expandedGroups.has(index) && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-2 mt-2">
+                              {project.subprojects!.map((subproject, subIndex) => (
+                                <motion.button
+                                  key={subIndex}
+                                  onClick={() => setSelectedProject(subproject)}
+                                  className="w-full text-left bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl p-4 transition-colors"
+                                  whileTap={{ scale: 0.98 }}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-white font-medium">{subproject.title}</span>
+                                    <svg className="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </div>
+                                </motion.button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </motion.button>
-                ))}
+                  ))}
+
+                  {simpleProjects.length > 0 && (
+                    <div>
+                      <div className="py-2 text-white/70">
+                        <span className="font-medium">Other</span>
+                      </div>
+                      <div className="space-y-2">
+                        {simpleProjects.map((project, index) => (
+                          <motion.button
+                            key={index}
+                            onClick={() => setSelectedProject(project)}
+                            className="w-full text-left bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl p-4 transition-colors"
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="text-white font-medium">{project.title}</span>
+                                {project.tag && (
+                                  <span className="text-xs px-2 py-0.5 bg-white/20 text-white/70 rounded-full">
+                                    {project.tag}
+                                  </span>
+                                )}
+                              </div>
+                              <svg className="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </div>
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {app.link && (
             <div className="mt-6">
