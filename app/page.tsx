@@ -60,8 +60,9 @@ export default function Home() {
   };
 
   const apps: AppData[] = [
-    { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I’m Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a handful of scrappy startups. I graduated in December 2024, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy." },
-    { id: 2, x: 3, y: 1, width: 1, height: 1, title: "Snorlax", subtitle: "My favorite pokemon", icon: "/snorlax.jpg", content: "I just wanted to add snorlax somewhere lol... I keep three cards of him on desk as well." },
+    { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I'm Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a couple of startups. I graduated in December 2024, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy.", ref_photos: ["/Climbing.jpg", "/Daisy.jpg"] },
+    { id: 2, x: 3, y: 1, width: 1, height: 1, title: "LinkedIn", icon: "/LinkedIn.png", content: "My LinkedIn", link: "https://www.linkedin.com/in/austin-wheeler-a84132248/" },
+    { id: 7, x: 4, y: 1, width: 1, height: 1, title: "GitHub", icon: "/Github.png", content: "My Github", link: "https://github.com/AustinWheel" },
     { 
       id: 3, 
       x: 1, 
@@ -98,72 +99,72 @@ export default function Home() {
                 { type: 'text', content: "With this approach, provisioning latency is reduced from ~15 minutes to ~20 seconds, significantly improving developer productivity while preserving the same safety guarantees as the default path." },
               ]
             },
-            {
-              title: "Soft Delete & Cleanup",
-              description: [
-                { type: 'text', content: "Built recoverable, programmatic deletion for RawHollow and dependent resources, including soft-delete with up to 90-day restore, as well as automated cleanup of stale test datastores saving ~$400k in unused cloud resources." },
-              ]
-            },
-            {
-              title: "Multi-Region Support",
-              description: [
-                { type: 'text', content: "Expanded service availability from a single region to full multi-region support, enabling wider global usage." },
-              ]
-            },
-            {
-              title: "Lifecycle Testing",
-              description: [
-                { type: 'text', content: "Designed and implemented automated end-to-end lifecycle testing that provisions new RawHollow datastores, validates service functionality, and safely tears them down, covering both standard and fast-provisioning paths." },
-              ]
-            },
-            {
-              title: "Shadow Replay Testing",
-              description: [
-                { type: 'text', content: "Built shadow replay (canary) testing for RawHollow by cloning live customer datasets and replaying production traffic against new releases, enabling regression detection for non-idempotent workloads." },
-              ]
-            },
+            // {
+            //   title: "Soft Delete & Cleanup",
+            //   description: [
+            //     { type: 'text', content: "Built recoverable, programmatic deletion for RawHollow and dependent resources, including soft-delete with up to 90-day restore, as well as automated cleanup of stale test datastores saving ~$400k in unused cloud resources." },
+            //   ]
+            // },
+            // {
+            //   title: "Multi-Region Support",
+            //   description: [
+            //     { type: 'text', content: "Expanded service availability from a single region to full multi-region support, enabling wider global usage." },
+            //   ]
+            // },
+            // {
+            //   title: "Lifecycle Testing",
+            //   description: [
+            //     { type: 'text', content: "Designed and implemented automated end-to-end lifecycle testing that provisions new RawHollow datastores, validates service functionality, and safely tears them down, covering both standard and fast-provisioning paths." },
+            //   ]
+            // },
+            // {
+            //   title: "Shadow Replay Testing",
+            //   description: [
+            //     { type: 'text', content: "Built shadow replay (canary) testing for RawHollow by cloning live customer datasets and replaying production traffic against new releases, enabling regression detection for non-idempotent workloads." },
+            //   ]
+            // },
           ]
         },
-        {
-          title: "Cinder",
-          description: [
-            { type: 'text', content: "Cinder is a high-density, versioned, persistent near-cache with a producer-consumer pattern." },
-          ],
-          subprojects: [
-            {
-              title: "Region-Staggered Publishes",
-              description: [
-                { type: 'text', content: "Implemented region-staggered publishes, enabling controlled rollouts across all US regions with the ability to halt consumption for rapid failure isolation." },
-              ]
-            },
-            {
-              title: "Observability & Debugging",
-              description: [
-                { type: 'text', content: "Improved operational observability and debugging with cycle version introspection, historical querying, and graph-based visualization of dataset lineage, making forked or broken update chains easier to detect." },
-              ]
-            },
-          ]
-        },
-        {
-          title: "Gutenberg",
-          description: [
-            { type: 'text', content: "Gutenberg is a versioned publish-subscribe datastore." },
-          ],
-          subprojects: [
-            {
-              title: "Purger Job Scaling",
-              description: [
-                { type: 'text', content: "Scaled the purger job by 10× with a multithreaded, concurrent design to increase throughput, reducing purging time from ~40 hours to ~4 hours and preventing backlog growth across tens of thousands of topics." },
-              ]
-            },
-          ]
-        },
-        {
-          title: "Control Plane Reliability",
-          description: [
-            { type: 'text', content: "Hardened control-plane operations by adding full metrics coverage, defining SLOs, configuring alerting, and delivering dashboards for provisioning, reads/writes, deletions, and latency monitoring." },
-          ]
-        },
+        // {
+        //   title: "Cinder",
+        //   description: [
+        //     { type: 'text', content: "Cinder is a high-density, versioned, persistent near-cache with a producer-consumer pattern." },
+        //   ],
+        //   subprojects: [
+        //     {
+        //       title: "Region-Staggered Publishes",
+        //       description: [
+        //         { type: 'text', content: "Implemented region-staggered publishes, enabling controlled rollouts across all US regions with the ability to halt consumption for rapid failure isolation." },
+        //       ]
+        //     },
+        //     {
+        //       title: "Observability & Debugging",
+        //       description: [
+        //         { type: 'text', content: "Improved operational observability and debugging with cycle version introspection, historical querying, and graph-based visualization of dataset lineage, making forked or broken update chains easier to detect." },
+        //       ]
+        //     },
+        //   ]
+        // },
+        // {
+        //   title: "Gutenberg",
+        //   description: [
+        //     { type: 'text', content: "Gutenberg is a versioned publish-subscribe datastore." },
+        //   ],
+        //   subprojects: [
+        //     {
+        //       title: "Purger Job Scaling",
+        //       description: [
+        //         { type: 'text', content: "Scaled the purger job by 10× with a multithreaded, concurrent design to increase throughput, reducing purging time from ~40 hours to ~4 hours and preventing backlog growth across tens of thousands of topics." },
+        //       ]
+        //     },
+        //   ]
+        // },
+        // {
+        //   title: "Control Plane Reliability",
+        //   description: [
+        //     { type: 'text', content: "Hardened control-plane operations by adding full metrics coverage, defining SLOs, configuring alerting, and delivering dashboards for provisioning, reads/writes, deletions, and latency monitoring." },
+        //   ]
+        // },
         {
           title: "Wide Row Scanner",
           tag: "Internship",
