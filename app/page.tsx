@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GridIcon from "@/components/GridIcon";
 import Dialog from "@/components/Dialog";
 
-type ProjectContent = 
+type ProjectContent =
   | { type: 'text'; content: string }
   | { type: 'image'; src: string; alt?: string };
 
@@ -34,6 +34,11 @@ interface AppData {
 export default function Home() {
   const [selectedApp, setSelectedApp] = useState<AppData | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -44,16 +49,16 @@ export default function Home() {
   }, []);
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
       month: 'long',
       day: 'numeric'
     });
@@ -63,15 +68,15 @@ export default function Home() {
     { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I'm Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a couple of startups. I graduated in December 2024, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy.", ref_photos: ["/Climbing.jpg", "/Daisy.jpg"] },
     { id: 2, x: 3, y: 1, width: 1, height: 1, title: "LinkedIn", icon: "/LinkedIn.png", content: "My LinkedIn", link: "https://www.linkedin.com/in/austin-wheeler-a84132248/" },
     { id: 7, x: 4, y: 1, width: 1, height: 1, title: "GitHub", icon: "/Github.png", content: "My Github", link: "https://github.com/AustinWheel" },
-    { 
-      id: 3, 
-      x: 1, 
-      y: 3, 
-      width: 2, 
-      height: 2, 
-      title: "Netflix", 
-      subtitle: "2024 Intern and Current Full-Time", 
-      icon: "/netflix.png", 
+    {
+      id: 3,
+      x: 1,
+      y: 3,
+      width: 2,
+      height: 2,
+      title: "Netflix",
+      subtitle: "2024 Intern and Current Full-Time",
+      icon: "/netflix.png",
       content: "I started at Netflix as an intern with KeyValue, and am now a Full Time Software Engineer on our Caching Datastore team.",
       projects: [
         {
@@ -99,72 +104,8 @@ export default function Home() {
                 { type: 'text', content: "With this approach, provisioning latency is reduced from ~15 minutes to ~20 seconds, significantly improving developer productivity while preserving the same safety guarantees as the default path." },
               ]
             },
-            // {
-            //   title: "Soft Delete & Cleanup",
-            //   description: [
-            //     { type: 'text', content: "Built recoverable, programmatic deletion for RawHollow and dependent resources, including soft-delete with up to 90-day restore, as well as automated cleanup of stale test datastores saving ~$400k in unused cloud resources." },
-            //   ]
-            // },
-            // {
-            //   title: "Multi-Region Support",
-            //   description: [
-            //     { type: 'text', content: "Expanded service availability from a single region to full multi-region support, enabling wider global usage." },
-            //   ]
-            // },
-            // {
-            //   title: "Lifecycle Testing",
-            //   description: [
-            //     { type: 'text', content: "Designed and implemented automated end-to-end lifecycle testing that provisions new RawHollow datastores, validates service functionality, and safely tears them down, covering both standard and fast-provisioning paths." },
-            //   ]
-            // },
-            // {
-            //   title: "Shadow Replay Testing",
-            //   description: [
-            //     { type: 'text', content: "Built shadow replay (canary) testing for RawHollow by cloning live customer datasets and replaying production traffic against new releases, enabling regression detection for non-idempotent workloads." },
-            //   ]
-            // },
           ]
         },
-        // {
-        //   title: "Cinder",
-        //   description: [
-        //     { type: 'text', content: "Cinder is a high-density, versioned, persistent near-cache with a producer-consumer pattern." },
-        //   ],
-        //   subprojects: [
-        //     {
-        //       title: "Region-Staggered Publishes",
-        //       description: [
-        //         { type: 'text', content: "Implemented region-staggered publishes, enabling controlled rollouts across all US regions with the ability to halt consumption for rapid failure isolation." },
-        //       ]
-        //     },
-        //     {
-        //       title: "Observability & Debugging",
-        //       description: [
-        //         { type: 'text', content: "Improved operational observability and debugging with cycle version introspection, historical querying, and graph-based visualization of dataset lineage, making forked or broken update chains easier to detect." },
-        //       ]
-        //     },
-        //   ]
-        // },
-        // {
-        //   title: "Gutenberg",
-        //   description: [
-        //     { type: 'text', content: "Gutenberg is a versioned publish-subscribe datastore." },
-        //   ],
-        //   subprojects: [
-        //     {
-        //       title: "Purger Job Scaling",
-        //       description: [
-        //         { type: 'text', content: "Scaled the purger job by 10× with a multithreaded, concurrent design to increase throughput, reducing purging time from ~40 hours to ~4 hours and preventing backlog growth across tens of thousands of topics." },
-        //       ]
-        //     },
-        //   ]
-        // },
-        // {
-        //   title: "Control Plane Reliability",
-        //   description: [
-        //     { type: 'text', content: "Hardened control-plane operations by adding full metrics coverage, defining SLOs, configuring alerting, and delivering dashboards for provisioning, reads/writes, deletions, and latency monitoring." },
-        //   ]
-        // },
         {
           title: "Wide Row Scanner",
           tag: "Internship",
@@ -191,14 +132,80 @@ export default function Home() {
     { id: 6, x: 3, y: 3, width: 2, height: 2, title: "Amazon", subtitle: "Internship", icon: "/amazon.jpg", content: "At Amazon, I helped simplify VPC data storage that was spread across roughly a thousand servers, each running its own copy of the same MySQL tables.\n I redesigned a key set of those tables for DynamoDB, creating cloud-native layouts that matched how our applications actually read and wrote data.\n After migrating the data and updating our billing APIs to use the new store, every server could pull from a single, highly available source instead of keeping its own replica.\n The change made the system noticeably snappier for customers, cut a large chunk of operational overhead, and paved the way for future teams to move the rest of their data with confidence." },
   ];
 
+  // Calculate max row used by any app
+  const maxRow = Math.max(...apps.map(app => app.y + app.height - 1));
+
+  // Measure grid area and calculate how many rows fit
+  useEffect(() => {
+    const updateLayout = () => {
+      if (!gridRef.current) return;
+      const containerWidth = gridRef.current.clientWidth;
+      const gridAreaHeight = gridRef.current.clientHeight;
+      const cellWidth = containerWidth / 4;
+      // Each row height ~1.2x cell width for iOS-like icon proportions
+      const idealRowHeight = cellWidth * 1.2;
+      const rows = Math.max(2, Math.floor(gridAreaHeight / idealRowHeight));
+      setRowsPerPage(rows);
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
+  }, []);
+
+  const totalPages = Math.ceil(maxRow / rowsPerPage);
+
+  // Get apps that belong on a given page
+  const getAppsForPage = (page: number) => {
+    const startRow = page * rowsPerPage + 1;
+    const endRow = (page + 1) * rowsPerPage;
+    return apps.filter(app => {
+      const appEndRow = app.y + app.height - 1;
+      return app.y >= startRow && appEndRow <= endRow;
+    });
+  };
+
+  // Ensure current page is valid when rowsPerPage changes
+  useEffect(() => {
+    if (currentPage >= totalPages) {
+      setCurrentPage(Math.max(0, totalPages - 1));
+    }
+  }, [totalPages, currentPage]);
+
+  // Swipe handling
+  const minSwipeDistance = 50;
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    if (touchStart === null || touchEnd === null) return;
+    const distance = touchStart - touchEnd;
+    if (Math.abs(distance) >= minSwipeDistance) {
+      if (distance > 0 && currentPage < totalPages - 1) {
+        setCurrentPage(p => p + 1);
+      } else if (distance < 0 && currentPage > 0) {
+        setCurrentPage(p => p - 1);
+      }
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  }, [touchStart, touchEnd, currentPage, totalPages]);
+
   return (
-    <div className="min-h-screen bg-black flex justify-center overflow-y-auto">
-      <div className="flex-1 relative max-w-screen md:max-w-lg min-h-screen bg-cover bg-center" 
+    <div className="h-screen bg-black flex justify-center overflow-hidden" style={{ height: '100dvh' }}>
+      <div className="flex-1 relative max-w-screen md:max-w-lg h-full bg-cover bg-center"
            style={{ backgroundImage: "url('/bg.JPG')" }}>
         <div className="absolute inset-0 backdrop-blur-md bg-black/30" />
-        
-        <div className="relative z-10 px-4 pt-16 pb-8">
-          <motion.div 
+
+        <div className="relative z-10 h-full flex flex-col px-4 pt-16 pb-8">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -208,16 +215,49 @@ export default function Home() {
             <p className="text-white/80 text-sm">{formatDate(currentTime)}</p>
           </motion.div>
 
-          <div className="relative w-full" style={{ paddingBottom: "180%" }}>
-            {apps.map((app, index) => (
-              <GridIcon
-                key={app.id}
-                app={app}
-                onClick={() => setSelectedApp(app)}
-                delay={index * 0.05}
-              />
-            ))}
+          {/* Grid area - fills remaining space */}
+          <div
+            ref={gridRef}
+            className="flex-1 relative overflow-hidden"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <motion.div
+              className="flex h-full"
+              animate={{ x: `-${currentPage * 100}%` }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {Array.from({ length: totalPages }, (_, pageIndex) => (
+                <div key={pageIndex} className="w-full h-full flex-shrink-0 relative">
+                  {getAppsForPage(pageIndex).map((app, index) => (
+                    <GridIcon
+                      key={app.id}
+                      app={{ ...app, y: app.y - pageIndex * rowsPerPage }}
+                      totalRows={rowsPerPage}
+                      onClick={() => setSelectedApp(app)}
+                      delay={index * 0.05}
+                    />
+                  ))}
+                </div>
+              ))}
+            </motion.div>
           </div>
+
+          {/* Page indicator dots */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-1.5 pt-4">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                    i === currentPage ? 'bg-white scale-110' : 'bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

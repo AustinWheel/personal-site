@@ -30,12 +30,13 @@ interface GridIconProps {
   app: AppData;
   onClick: () => void;
   delay?: number;
+  totalRows?: number;
 }
 
-export default function GridIcon({ app, onClick, delay = 0 }: GridIconProps) {
-  // Grid is 4 columns x 6 rows
+export default function GridIcon({ app, onClick, delay = 0, totalRows = 6 }: GridIconProps) {
+  // Grid is 4 columns x N rows
   const colWidth = 100 / 4; // 25%
-  const rowHeight = 100 / 6; // 16.67%
+  const rowHeight = 100 / totalRows;
   const gap = 0; // 2% gap
   
   // Calculate position and size as percentages
