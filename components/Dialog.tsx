@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import ProjectDialog from "./ProjectDialog";
 
-type ProjectContent = 
+type ProjectContent =
   | { type: 'text'; content: string }
   | { type: 'image'; src: string; alt?: string };
 
@@ -34,6 +34,27 @@ interface DialogProps {
   app: AppData;
   onClose: () => void;
 }
+
+function GlassCloseButton({ onClick, variant = "light" }: { onClick: () => void; variant?: "light" | "dark" }) {
+  const isLight = variant === "light";
+  return (
+    <button
+      onClick={onClick}
+      className={`w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center transition-colors ${
+        isLight
+          ? "bg-white/20 hover:bg-white/30"
+          : "bg-black/10 hover:bg-black/20"
+      }`}
+      style={{ WebkitBackdropFilter: 'blur(8px)' }}
+    >
+      <svg className={`w-4 h-4 ${isLight ? "text-white/80" : "text-black/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  );
+}
+
+export { GlassCloseButton };
 
 export default function Dialog({ app, onClose }: DialogProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -67,55 +88,28 @@ export default function Dialog({ app, onClose }: DialogProps) {
 
   return (
     <>
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      onClick={onClose}
+    <motion.div
+      className="fixed inset-0 z-50 bg-white/20 backdrop-blur-2xl"
+      style={{ WebkitBackdropFilter: 'blur(24px)' }}
+      initial={{ scale: 0.8, opacity: 0, borderRadius: "40px" }}
+      animate={{ scale: 1, opacity: 1, borderRadius: "0px" }}
+      exit={{ scale: 0.8, opacity: 0, borderRadius: "40px" }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      <motion.div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-      />
-      
-      <motion.div
-        initial={{ y: "100%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100%", opacity: 0 }}
-        transition={{ 
-          ease: "easeIn",
-          duration: 0.3,
-          opacity: { duration: 0.15 }
-        }}
-        className="relative bg-white/20 backdrop-blur-2xl rounded-t-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl border-t border-white/20"
-        onClick={(e) => e.stopPropagation()}
-        style={{ 
-          WebkitBackdropFilter: 'blur(24px)', 
-          height: 'min(90dvh, 90vh)',
-          maxHeight: 'calc(100dvh - 2rem)',
-        }}
-      >
-        <div className="w-12 h-1 bg-white/40 rounded-full mx-auto mt-3 mb-2"/>
-        
-        <div className="px-6 pb-6 overflow-y-auto scrollbar-hide" style={{ height: 'calc(min(90dvh, 90vh) - 60px)' }}>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-3xl font-bold text-white drop-shadow-lg">{app.title}</h2>
-              {app.subtitle && (
-                <p className="text-white/70 text-lg mt-1 drop-shadow-md">{app.subtitle}</p>
-              )}
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white/70 hover:text-white transition-colors p-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+      <div className="h-full flex flex-col max-w-lg mx-auto">
+        {/* Header with close button */}
+        <div className="flex items-start justify-between px-6 pt-14 pb-2">
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold text-white drop-shadow-lg">{app.title}</h2>
+            {app.subtitle && (
+              <p className="text-white/70 text-lg mt-1 drop-shadow-md">{app.subtitle}</p>
+            )}
           </div>
+          <GlassCloseButton onClick={onClose} />
+        </div>
 
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pb-8">
           {app.ref_photos && app.ref_photos.length > 0 && (
             <div className="grid grid-cols-3 gap-2 mb-4">
               {app.ref_photos.map((photo, index) => (
@@ -250,9 +244,9 @@ export default function Dialog({ app, onClose }: DialogProps) {
             </div>
           )}
         </div>
-      </motion.div>
-    </div>
-    
+      </div>
+    </motion.div>
+
     <AnimatePresence>
       {selectedProject && (
         <ProjectDialog

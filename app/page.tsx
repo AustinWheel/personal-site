@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GridIcon from "@/components/GridIcon";
 import Dialog from "@/components/Dialog";
+import BlogApp from "@/components/BlogApp";
 
 type ProjectContent =
   | { type: 'text'; content: string }
@@ -29,13 +30,16 @@ interface AppData {
   link?: string;
   ref_photos?: string[];
   projects?: Project[];
+  appType?: 'blog';
 }
 
 export default function Home() {
   const [selectedApp, setSelectedApp] = useState<AppData | null>(null);
+  const [blogOpen, setBlogOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [gridHeight, setGridHeight] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -130,6 +134,7 @@ export default function Home() {
     },
     { id: 5, x: 3, y: 2, width: 1, height: 1, title: "ConnectPlus", subtitle: "HSE (会说English)", icon: "/hse.png", content: "ConnectPlus is a nonprofit platform that matches Chinese students with volunteer English tutors from U.S. high schools, making high-quality language education more accessible and affordable. Designed with both communities in mind, the platform supports seamless scheduling, class tracking, and progress monitoring, while offering American high schoolers a meaningful way to earn volunteer hours and make a global impact through language learning. For students, we provide a platform with completely free lessons to those with learning disabilities.", link: "https://www.connectpluseducation.org" },
     { id: 6, x: 3, y: 3, width: 2, height: 2, title: "Amazon", subtitle: "Internship", icon: "/amazon.jpg", content: "At Amazon, I helped simplify VPC data storage that was spread across roughly a thousand servers, each running its own copy of the same MySQL tables.\n I redesigned a key set of those tables for DynamoDB, creating cloud-native layouts that matched how our applications actually read and wrote data.\n After migrating the data and updating our billing APIs to use the new store, every server could pull from a single, highly available source instead of keeping its own replica.\n The change made the system noticeably snappier for customers, cut a large chunk of operational overhead, and paved the way for future teams to move the rest of their data with confidence." },
+    { id: 8, x: 4, y: 2, width: 1, height: 1, title: "Austin's Blog", icon: "/blog.jpg", content: "", appType: "blog" },
   ];
 
   // Calculate max row used by any app
@@ -146,6 +151,8 @@ export default function Home() {
       const idealRowHeight = cellWidth * 1.2;
       const rows = Math.max(2, Math.floor(gridAreaHeight / idealRowHeight));
       setRowsPerPage(rows);
+      // Cap grid height so icons maintain proper proportions
+      setGridHeight(rows * idealRowHeight);
     };
 
     updateLayout();
@@ -204,7 +211,7 @@ export default function Home() {
            style={{ backgroundImage: "url('/bg.JPG')" }}>
         <div className="absolute inset-0 backdrop-blur-md bg-black/30" />
 
-        <div className="relative z-10 h-full flex flex-col px-4 pt-16 pb-8">
+        <div className="relative z-10 h-full flex flex-col px-4 pt-8 pb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -219,10 +226,14 @@ export default function Home() {
           <div
             ref={gridRef}
             className="flex-1 relative overflow-hidden"
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
           >
+            <div
+              className="relative overflow-hidden mx-auto"
+              style={gridHeight ? { height: gridHeight } : { height: '100%' }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
             <motion.div
               className="flex h-full"
               animate={{ x: `-${currentPage * 100}%` }}
@@ -235,13 +246,20 @@ export default function Home() {
                       key={app.id}
                       app={{ ...app, y: app.y - pageIndex * rowsPerPage }}
                       totalRows={rowsPerPage}
-                      onClick={() => setSelectedApp(app)}
+                      onClick={() => {
+                        if (app.appType === 'blog') {
+                          setBlogOpen(true);
+                        } else {
+                          setSelectedApp(app);
+                        }
+                      }}
                       delay={index * 0.05}
                     />
                   ))}
                 </div>
               ))}
             </motion.div>
+            </div>
           </div>
 
           {/* Page indicator dots */}
@@ -267,6 +285,12 @@ export default function Home() {
             app={selectedApp}
             onClose={() => setSelectedApp(null)}
           />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {blogOpen && (
+          <BlogApp onClose={() => setBlogOpen(false)} />
         )}
       </AnimatePresence>
     </div>
