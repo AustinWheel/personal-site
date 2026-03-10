@@ -70,8 +70,8 @@ export default function Home() {
 
   const apps: AppData[] = [
     { id: 1, x: 1, y: 1, width: 2, height: 2, title: "About Me", icon: "/bush.jpg", content: "Hi, I'm Austin Wheeler — currently a software engineer at Netflix with a focus on datastores. Additionally, I've interned at places like Amazon and have experience in building web and mobile apps at a couple of startups. I graduated in December 2024, and outside of code, I spend my time climbing, training jiu-jitsu, watching anime, and hanging out with my dog Daisy.", ref_photos: ["/Climbing.jpg", "/Daisy.jpg"] },
-    { id: 2, x: 3, y: 1, width: 1, height: 1, title: "LinkedIn", icon: "/LinkedIn.png", content: "My LinkedIn", link: "https://www.linkedin.com/in/austin-wheeler-a84132248/" },
-    { id: 7, x: 4, y: 1, width: 1, height: 1, title: "GitHub", icon: "/Github.png", content: "My Github", link: "https://github.com/AustinWheel" },
+    { id: 2, x: 3, y: 1, width: 1, height: 1, title: "LinkedIn", icon: "/LinkedIn.jpeg", content: "My LinkedIn", link: "https://www.linkedin.com/in/austin-wheeler-a84132248/" },
+    { id: 7, x: 4, y: 1, width: 1, height: 1, title: "GitHub", icon: "/Github.jpeg", content: "My Github", link: "https://github.com/AustinWheel" },
     {
       id: 3,
       x: 1,
@@ -134,7 +134,7 @@ export default function Home() {
     },
     { id: 5, x: 3, y: 2, width: 1, height: 1, title: "ConnectPlus", subtitle: "HSE (会说English)", icon: "/hse.png", content: "ConnectPlus is a nonprofit platform that matches Chinese students with volunteer English tutors from U.S. high schools, making high-quality language education more accessible and affordable. Designed with both communities in mind, the platform supports seamless scheduling, class tracking, and progress monitoring, while offering American high schoolers a meaningful way to earn volunteer hours and make a global impact through language learning. For students, we provide a platform with completely free lessons to those with learning disabilities.", link: "https://www.connectpluseducation.org" },
     { id: 6, x: 3, y: 3, width: 2, height: 2, title: "Amazon", subtitle: "Internship", icon: "/amazon.jpg", content: "At Amazon, I helped simplify VPC data storage that was spread across roughly a thousand servers, each running its own copy of the same MySQL tables.\n I redesigned a key set of those tables for DynamoDB, creating cloud-native layouts that matched how our applications actually read and wrote data.\n After migrating the data and updating our billing APIs to use the new store, every server could pull from a single, highly available source instead of keeping its own replica.\n The change made the system noticeably snappier for customers, cut a large chunk of operational overhead, and paved the way for future teams to move the rest of their data with confidence." },
-    { id: 8, x: 4, y: 2, width: 1, height: 1, title: "Austin's Blog", icon: "/blog.jpg", content: "", appType: "blog" },
+    { id: 8, x: 4, y: 2, width: 1, height: 1, title: "Austin's Blog", icon: "/blog.jpeg", content: "", appType: "blog" },
   ];
 
   // Calculate max row used by any app
